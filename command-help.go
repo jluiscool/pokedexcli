@@ -13,5 +13,6 @@ func commandHelp() error {
 		fmt.Printf("%s: %s\n", cmd.name, cmd.description)
 	}
 	fmt.Println()
+	//returns no error
 	return nil
 }

@@ -31,9 +31,9 @@ func startRepl() {
 		command, exists := getCommands()[commandName]
 		//if it exists
 		if exists {
-			//err message is the command.Callback()'s return
+			//err message is the command.Callback()'s return, executes func
 			err := command.callback()
-			//prints message
+			//prints error if any
 			if err != nil {
 				fmt.Println(err)
 			}

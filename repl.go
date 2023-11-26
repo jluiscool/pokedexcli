@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func startRepl() {
+func startRepl(cfg *config) {
 	//initiate a reader
 	reader := bufio.NewScanner(os.Stdin)
 	//welcome message
@@ -32,7 +32,7 @@ func startRepl() {
 		//if it exists
 		if exists {
 			//err message is the command.Callback()'s return, executes func
-			err := command.callback()
+			err := command.callback(cfg)
 			//prints error if any
 			if err != nil {
 				fmt.Println(err)
@@ -58,12 +58,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
-}
-
-type config struct {
-	next     string
-	previous string
+	callback    func(*config) error
 }
 
 // list of commands

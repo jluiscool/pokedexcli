@@ -21,7 +21,7 @@ func (c *Client) ListLocationAreas() (LocationAreasResp, error) {
 	if err != nil {
 		return LocationAreasResp{}, err
 	}
-	//closes body after done reading it
+	//closes body after the function returns
 	defer res.Body.Close()
 	if res.StatusCode > 399 {
 		return LocationAreasResp{}, fmt.Errorf("bad status code: %v", res.StatusCode)
@@ -33,6 +33,7 @@ func (c *Client) ListLocationAreas() (LocationAreasResp, error) {
 		return LocationAreasResp{}, err
 	}
 
+	//declare empty variable
 	locationAreasResp := LocationAreasResp{}
 	//unmarshal takes the data and assigns it to a variable with a pointer
 	err = json.Unmarshal(data, &locationAreasResp)

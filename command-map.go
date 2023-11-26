@@ -7,7 +7,7 @@ import (
 
 func commandMap(cfg *config) error {
 
-	res, err := cfg.pokeapiClient.ListLocationAreas()
+	res, err := cfg.pokeapiClient.ListLocationAreas(cfg.nextLocationAreaURL)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -55,4 +55,34 @@ func commandMap(cfg *config) error {
 	// }
 
 	// return nil
+}
+
+func commandMapb(cfg *config) error {
+	if cfg.prevLocationAreaURL == nil {
+		return fmt.Errorf("no previous cities found")
+	}
+
+	res, err := cfg.pokeapiClient.ListLocationAreas(cfg.prevLocationAreaURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Location areas:")
+	for _, area := range res.Results {
+		fmt.Printf(" - %s\n", area.Name)
+	}
+	//sets the config's next location url based on the response from API
+	cfg.nextLocationAreaURL = res.Next
+	cfg.prevLocationAreaURL = res.Previous
+	return nil
+
+	// package main
+
+	// import "os"
+
+	//	func commandMapb(cfg *config) error {
+	//		//exits the code with a error code of 0
+	//		//which means it successfully exited
+	//		os.Exit(0)
+	//		return nil
+	//	}
 }

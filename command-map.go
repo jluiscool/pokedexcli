@@ -37,9 +37,10 @@ func commandMap() error {
 		log.Fatal(err)
 	}
 	results := apiResp.Results
+	fmt.Printf("%v \n", results)
 	for c, city := range results {
 		fmt.Printf("%s \n", city.Name)
-		fmt.Printf("%v \n", c)
+		fmt.Printf("%v \n", c+1)
 	}
 
 	return nil

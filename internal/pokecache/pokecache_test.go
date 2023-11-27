@@ -1,10 +1,14 @@
 package pokeacache
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 // test to see we're never return nil
 func TestCreateCache(t *testing.T) {
-	cache := NewCache()
+	interval := time.Millisecond * 10
+	cache := NewCache(interval)
 	// if there is no key value pairs
 	if cache.cache == nil {
 		t.Error("cache is nil")
@@ -13,7 +17,8 @@ func TestCreateCache(t *testing.T) {
 
 // test adding of key value pairs
 func TestAddGetCache(t *testing.T) {
-	cache := NewCache()
+	interval := time.Millisecond * 10
+	cache := NewCache(interval)
 
 	cases := []struct {
 		inputKey string
@@ -34,5 +39,21 @@ func TestAddGetCache(t *testing.T) {
 		if string(actual) != string(cas.inputVal) {
 			t.Errorf("%s value doesn't match %s", string(actual), string(cas.inputVal))
 		}
+	}
+}
+
+func TestReap(t *testing.T) {
+	interval := time.Millisecond * 10
+	cache := NewCache(interval)
+
+	keyOne := "key1"
+	cache.Add(keyOne, []byte("hello"))
+
+	//needs to wait longer than the interval
+	time.Sleep(interval + time.Millisecond)
+
+	_, ok := cache.Get(keyOne)
+	if ok {
+		t.Errorf("%s did not get reaped", keyOne)
 	}
 }

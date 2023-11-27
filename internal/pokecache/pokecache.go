@@ -15,10 +15,15 @@ type cacheEntry struct {
 
 // helper method to create new cache
 // kind of like a constructor
-func NewCache() Cache {
-	return Cache{
+func NewCache(interval time.Duration) Cache {
+	c := Cache{
 		cache: make(map[string]cacheEntry),
 	}
+
+	// reapLoop needs to run in a go routine, else it runs forever, making the tests get stuck
+	//can't run on the main thread
+	go c.reapLoop(interval)
+	return c
 }
 
 // adds new entries to cache, like a constructor

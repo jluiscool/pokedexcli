@@ -13,7 +13,22 @@ func (c *Client) ListLocationAreas(pageURL *string) (LocationAreasResp, error) {
 	if pageURL != nil {
 		fullURL = *pageURL
 	}
-	fmt.Println(fullURL)
+	//key should be the url, url should return the same []byte
+	data, ok := c.cache.Get(fullURL)
+	if ok {
+		//if ok is true it means cache was hit
+		fmt.Println("cache hit")
+		//declare empty variable
+		locationAreasResp := LocationAreasResp{}
+		//unmarshal takes the data and assigns it to a variable with a pointer
+		err := json.Unmarshal(data, &locationAreasResp)
+		if err != nil {
+			return LocationAreasResp{}, err
+		}
+	} else {
+		//if cache was not hit:
+		fmt.Println("cache missed")
+	}
 
 	req, err := http.NewRequest("GET", fullURL, nil)
 	if err != nil {
@@ -32,7 +47,8 @@ func (c *Client) ListLocationAreas(pageURL *string) (LocationAreasResp, error) {
 	}
 
 	//reads the body of the response
-	data, err := io.ReadAll(res.Body)
+	//no need to initialize data, just assign
+	data, err = io.ReadAll(res.Body)
 	if err != nil {
 		return LocationAreasResp{}, err
 	}
@@ -44,6 +60,9 @@ func (c *Client) ListLocationAreas(pageURL *string) (LocationAreasResp, error) {
 	if err != nil {
 		return LocationAreasResp{}, err
 	}
+
+	//before returning, save cache data
+	c.cache.Add(fullURL, data)
 
 	return locationAreasResp, nil
 }

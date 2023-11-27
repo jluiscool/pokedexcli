@@ -36,3 +36,22 @@ func (c *Cache) Get(key string) ([]byte, bool) {
 	cacheE, ok := c.cache[key]
 	return cacheE.val, ok
 }
+
+func (c *Cache) reapLoop(interval time.Duration) {
+	ticker := time.NewTicker(interval)
+	//ticker.C is the channel the ticker operates on
+	//if ticker is 5 minutes, for loop runs every 5 mins
+	for range ticker.C {
+		c.reap(interval)
+	}
+}
+
+// purge cache after a certain interval
+func (c *Cache) reap(interval time.Duration) {
+	timeAgo := time.Now().UTC().Add(-interval)
+	for k, v := range c.cache {
+		if v.createdAt.Before(timeAgo) {
+			delete(c.cache, k)
+		}
+	}
+}

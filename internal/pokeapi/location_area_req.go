@@ -102,7 +102,7 @@ func (c *Client) GetLocationArea(locationAreaName string) (LocationArea, error) 
 	//closes body after the function returns
 	defer res.Body.Close()
 	if res.StatusCode > 399 {
-		return LocationArea{}, fmt.Errorf("bad status code: %v", res.StatusCode)
+		return LocationArea{}, fmt.Errorf("bad status code: %v on url %v", res.StatusCode, fullURL)
 	}
 
 	//reads the body of the response

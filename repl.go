@@ -31,7 +31,7 @@ func startRepl(cfg *config) {
 			continue
 		}
 		if len(cleaned) > 1 {
-			args = cleaned[:1]
+			args = cleaned[1:]
 		}
 
 		//checks to see if command exists from getCommands func, uses commandName as the key
@@ -96,6 +96,11 @@ func getCommands() map[string]cliCommand {
 			name:        "explore {location_area}",
 			description: "Lists pokemon in a a location area",
 			callback:    callbackExplore,
+		},
+		"catch": {
+			name:        "catch {pokemon_name}",
+			description: "Try catching a pokemon",
+			callback:    commandCatch,
 		},
 	}
 }

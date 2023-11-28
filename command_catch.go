@@ -27,6 +27,8 @@ func commandCatch(cfg *config, args ...string) error {
 	if randNum > threshold {
 		return fmt.Errorf("failed to catch %s", pokemon.Name)
 	}
+	//make a new key with that pokemon
+	cfg.caughtPokemon[pokemonName] = pokemon
 
 	fmt.Printf("%v was caught! \n", pokemon.Name)
 	return nil

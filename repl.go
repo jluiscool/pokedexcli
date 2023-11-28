@@ -18,21 +18,28 @@ func startRepl(cfg *config) {
 		reader.Scan()
 
 		//filter words to get a list of words typed
-		words := cleanInput(reader.Text())
+		cleaned := cleanInput(reader.Text())
 		//if nothing was typed, keep the loop going.
-		if len(words) == 0 {
+		if len(cleaned) == 0 {
 			continue
 		}
 
 		//command looks for the first word of the list
-		commandName := words[0]
+		commandName := cleaned[0]
+		args := []string{}
+		if len(cleaned) == 0 {
+			continue
+		}
+		if len(cleaned) > 1 {
+			args = cleaned[:1]
+		}
 
 		//checks to see if command exists from getCommands func, uses commandName as the key
 		command, exists := getCommands()[commandName]
 		//if it exists
 		if exists {
 			//err message is the command.Callback()'s return, executes func
-			err := command.callback(cfg)
+			err := command.callback(cfg, args...)
 			//prints error if any
 			if err != nil {
 				fmt.Println(err)
@@ -58,7 +65,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(*config, ...string) error
 }
 
 // list of commands
@@ -84,6 +91,11 @@ func getCommands() map[string]cliCommand {
 			name:        "mapb",
 			description: "Displays the previous 20 location areas",
 			callback:    commandMapb,
+		},
+		"explore": {
+			name:        "explore {location_area}",
+			description: "Lists pokemon in a a location area",
+			callback:    callbackExplore,
 		},
 	}
 }
